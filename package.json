@@ -1,0 +1,15 @@
+{
+    "name": "xls-viewer",
+    "version": "0.0.1",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "eastasianwidth": "^0.3.0",
+        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    },
+    "repository": {},
+    "engines": {
+        "node": "18.x"
+    }
+}
