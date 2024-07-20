@@ -4,17 +4,17 @@ var Utils = XLSX.utils;
 var eaw = require( 'eastasianwidth' );
 
 var _filepath = null;
-var _sheetname = null;
+var _sheetnames = null;
 var _row_max_width = 20;
-var _border = 1;  //. true
-var _value = 1;  //. true
+var _border = 1;   //. true
+var _formula = 0;  //. false
 for( var i = 2; i < process.argv.length; i ++ ){
   if( process.argv[i].startsWith( '--' ) ){
     var tmp = process.argv[i].substr( 2 ).split( '=' );
     if( tmp && tmp.length == 2 ){
       switch( tmp[0] ){
-      case 'sheet':
-        _sheetname = tmp[1];
+      case 'sheets':
+        _sheetnames = tmp[1].split( ',' );
         break;
       case 'row_max_width':
         _row_max_width = parseInt( tmp[1] );
@@ -22,8 +22,8 @@ for( var i = 2; i < process.argv.length; i ++ ){
       case 'border':
         _border = parseInt( tmp[1] );
         break;
-      case 'value':
-        _value = parseInt( tmp[1] );
+      case 'formula':
+        _formula = parseInt( tmp[1] );
         break;
 
       default:
@@ -40,7 +40,7 @@ if( _filepath ){
   //. sheets = { Sheet1: {}, Sheet2: {}, .. }
   var sheets = book.Sheets;
   Object.keys( sheets ).forEach( function( sheetname ){
-    if( !_sheetname || _sheetname == sheetname ){
+    if( !_sheetnames || _sheetnames.length == 0 || _sheetnames.indexOf( sheetname ) > -1 ){
       var sheet = sheets[sheetname]
       var cells = [];
 
@@ -56,7 +56,7 @@ if( _filepath ){
           var cell = sheet[address];
           //console.log( {cell} );
           if( typeof cell !== "undefined" ){
-            if( _value ){
+            if( !_formula ){
               if( typeof cell.v != "undefined" ){
                 row.push( cell.v );
               }else{

@@ -8,10 +8,10 @@ CLI-based Excel viewer
 
 ## How to use
 
-- `$ node app [options] <filepath>`
+- `$ node xls-viewer [options] <filepath>`
   - `[options]`
-    - `--sheet=sheetname`
-      - specify single sheet by name
+    - `--sheets=sheetname1,sheetname2,..`
+      - specify sheets by name separated by comma(,)
       - default: all sheets
     - `--row_max_width=num`
       - specify maximum width for each rows
@@ -19,9 +19,9 @@ CLI-based Excel viewer
     - `--border=num`
       - specify 0 if border should not be displayed
       - default: 1
-    - `--value=num`
-      - specify 0 if formula should be displayed
-      - default: 1
+    - `--formula=num`
+      - specify 1 if formula(not calculated value) should be displayed
+      - default: 0
 
 
 ## Reference

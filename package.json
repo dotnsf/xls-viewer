@@ -2,7 +2,7 @@
     "name": "xls-viewer",
     "version": "0.0.1",
     "scripts": {
-        "start": "node app.js"
+        "start": "node xls-viewer.js"
     },
     "dependencies": {
         "eastasianwidth": "^0.3.0",
