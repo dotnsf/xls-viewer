@@ -9,6 +9,7 @@ var _row_max_width = 20;
 var _border = 1;   //. true
 var _formula = 0;  //. false
 var _a1 = 0;       //. false #2
+var _label = 0;    //. false #1
 for( var i = 2; i < process.argv.length; i ++ ){
   if( process.argv[i].startsWith( '--' ) ){
     var tmp = process.argv[i].substr( 2 ).split( '=' );
@@ -28,6 +29,9 @@ for( var i = 2; i < process.argv.length; i ++ ){
         break;
       case 'a1':
         _a1 = parseInt( tmp[1] );
+        break;
+      case 'label':
+        _label = parseInt( tmp[1] );
         break;
 
       default:
@@ -56,14 +60,43 @@ if( _filepath ){
         decodeRange['s']['r'] = 0;
       }
 
+      //. #1
+      if( _label ){
+        var row = [ '' ];
+        var codeA = 65;  // 'A'
+        var codeZ = 90;  // 'Z'
+        for( var c = decodeRange['s']['c']; c <= decodeRange['e']['c']; c ++ ){
+          var code = c;  //. 26 以上の可能性あり
+          var column_label = '';
+          while( code >= 0 ){
+            if( code > 25 ){
+              var t1 = code % 26;
+              var t2 = Math.floor( code / 26 );
+
+              column_label = String.fromCharCode( codeA + t1 ) + column_label;
+              code = t2 - 1;
+            }else{
+              column_label = String.fromCharCode( codeA + code ) + column_label;
+              code = -1;
+            }
+          }
+          row.push( column_label );
+        }
+        cells.push( row );
+      }
+
       //. シート内の全セル値を取り出し
       for( var r = decodeRange['s']['r']; r <= decodeRange['e']['r']; r ++ ){
         var row = [];
+
+        //. #1
+        if( _label ){
+          row.push( r + 1 );
+        }
+
         for( var c = decodeRange['s']['c']; c <= decodeRange['e']['c']; c ++ ){
-          //console.log( {r}, {c} );
           var address = Utils.encode_cell( { r: r, c: c } );
           var cell = sheet[address];
-          //console.log( {cell} );
           if( typeof cell !== "undefined" ){
             if( !_formula ){
               if( typeof cell.v != "undefined" ){
@@ -94,7 +127,6 @@ if( _filepath ){
       }
 
       if( cells && cells.length ){
-        //console.log( cells );
         //. シート内の列毎の最大長さを定義
         var row_widths = [];
         
@@ -107,7 +139,6 @@ if( _filepath ){
           for( var c = 0; c < cells[r].length; c ++ ){
             var cell = cells[r][c]
             var str_cell = '' + cell;
-            //console.log( {r}, {c}, {str_cell} );
             if( row_widths[c] < eaw.length( str_cell ) ){
               if( _row_max_width < eaw.length( str_cell ) ){
                 row_widths[c] = _row_max_width;
@@ -117,25 +148,19 @@ if( _filepath ){
             }
           }
         }
-        //console.log( row_widths );
 
         //. Display
-        displaySheet( sheetname, cells, row_widths, _border, _row_max_width );
+        displaySheet( sheetname, cells, row_widths, _border, _row_max_width, _label );
       }
     }
   });
 }
 
-function displaySheet( s, cl, rw, b, rmw ){
-  //console.log( {s} );
-  //console.log( {cl} );
-  //console.log( {rw} );
-  //console.log( {b} );
-  //console.log( {rmw} );
+function displaySheet( s, cl, rw, b, rmw, l ){
   console.log( s + ' :' );
 
-  if( _border ){
-    displayBorderLine( rw );
+  if( b ){
+    displayBorderLine( rw, l );
   }
 
   for( var r = 0; r < cl.length; r ++ ){
@@ -188,19 +213,27 @@ function displaySheet( s, cl, rw, b, rmw ){
       console.log( line );
     }
 
-    if( _border ){
-      displayBorderLine( rw );
+    if( b ){
+      if( r == 0 ){
+        displayBorderLine( rw, l );
+      }else{
+        displayBorderLine( rw );
+      }
     }
   }
 
   console.log( '' );
 }
 
-function displayBorderLine( rw ){
+function displayBorderLine( rw, l ){
   var line = '+';
   for( var c = 0; c < rw.length; c ++ ){
     for( var i = 0; i < rw[c] + 2; i ++ ){  //. 左右に空白１つぶん余計に出力する
-      line += '-';
+      if( l || ( _label && c == 0 ) ){
+        line += '=';  //. #1
+      }else{
+        line += '-';
+      }
     }
 
     line += '+';

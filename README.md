@@ -25,6 +25,9 @@ CLI-based Excel viewer
     - `--a1=num`
       - specify 1 if display cells from A1
       - default: 0
+    - `--label=num`
+      - specify 1 if display labels of row/column
+      - default: 0
 
 
 ## Reference
