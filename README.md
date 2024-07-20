@@ -22,6 +22,9 @@ CLI-based Excel viewer
     - `--formula=num`
       - specify 1 if formula(not calculated value) should be displayed
       - default: 0
+    - `--a1=num`
+      - specify 1 if display cells from A1
+      - default: 0
 
 
 ## Reference
