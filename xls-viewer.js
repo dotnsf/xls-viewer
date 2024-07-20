@@ -8,6 +8,7 @@ var _sheetnames = null;
 var _row_max_width = 20;
 var _border = 1;   //. true
 var _formula = 0;  //. false
+var _a1 = 0;       //. false #2
 for( var i = 2; i < process.argv.length; i ++ ){
   if( process.argv[i].startsWith( '--' ) ){
     var tmp = process.argv[i].substr( 2 ).split( '=' );
@@ -24,6 +25,9 @@ for( var i = 2; i < process.argv.length; i ++ ){
         break;
       case 'formula':
         _formula = parseInt( tmp[1] );
+        break;
+      case 'a1':
+        _a1 = parseInt( tmp[1] );
         break;
 
       default:
@@ -46,6 +50,11 @@ if( _filepath ){
 
       var range = sheet["!ref"];
       var decodeRange = Utils.decode_range( range );  //. { s: { c:0, r:0 }, e: { c:5, r:4 } }
+      //. #2
+      if( _a1 ){
+        decodeRange['s']['c'] = 0;
+        decodeRange['s']['r'] = 0;
+      }
 
       //. シート内の全セル値を取り出し
       for( var r = decodeRange['s']['r']; r <= decodeRange['e']['r']; r ++ ){
