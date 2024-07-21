@@ -106,17 +106,9 @@ if( _filepath ){
               }
             }else{
               if( typeof cell.f != "undefined" ){
-                if( cell.f ){
-                  row.push( cell.f );
-                }else{
-                  row.push( cell.v );
-                }
+                row.push( cell.f );
               }else{
-                if( typeof cell.v != "undefined" ){
-                  row.push( cell.v );
-                }else{
-                  row.push( '' );
-                }
+                row.push( '' );
               }
             }
           }else{
